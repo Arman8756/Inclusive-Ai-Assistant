@@ -1,0 +1,29 @@
+class Student {
+    constructor(name, rollNumber, branch, collegeName) {
+        this.name = name;
+        this.rollNumber = rollNumber;
+        this.branch = branch;
+        this.collegeName = collegeName;
+    }
+
+    printDetails() {
+        console.log(`Name: ${this.name}`);
+        console.log(`Branch: ${this.branch}`);
+        console.log(`Roll Number: ${this.rollNumber}`);
+        console.log(`College Name: ${this.collegeName}`);
+        console.log();
+    }
+}
+
+// Create student objects
+let students = [
+    new Student("Arman Ansari", "0133CY241028", "Cyber Security", "Sagar Institute of Research and Technology, Bhopal"),
+    new Student("Aman Nandanwar", "0133CY241014", "Cyber Security", "Sagar Institute of Research and Technology, Bhopal"),
+    new Student("Aisha Yadav", "0133CY241009", "Cyber Security", "Sagar Institute of Research and Technology, Bhopal")
+];
+
+// Print student details
+for (let i = 0; i < students.length; i++) {
+    console.log(`Student ${i + 1}:`);
+    students[i].printDetails();
+}
