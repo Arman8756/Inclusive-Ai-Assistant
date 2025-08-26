@@ -1,0 +1,19 @@
+// Simple Student Marks Calculator
+
+let sub1 = parseFloat(prompt("Enter marks for Subject 1:"));
+let sub2 = parseFloat(prompt("Enter marks for Subject 2:"));
+let sub3 = parseFloat(prompt("Enter marks for Subject 3:"));
+
+let total = sub1 + sub2 + sub3;
+let average = total / 3;
+
+let grade;
+if (average >= 90) grade = "A+";
+else if (average >= 75) grade = "A";
+else if (average >= 60) grade = "B";
+else if (average >= 40) grade = "C";
+else grade = "Fail";
+
+alert("Total Marks: " + total +
+      "\nAverage: " + average.toFixed(2) +
+      "\nGrade: " + grade);
