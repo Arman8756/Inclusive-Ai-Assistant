@@ -1,0 +1,20 @@
+const express = require("express");
+const app = express();
+const port = 3000;
+
+// Sample student data
+const students = [
+  { id: 1, name: "Aman Nandanwar", age: 19, course: "Computer Science", year: "2nd" },
+  { id: 2, name: "Arman Ansari", age: 19, course: "Computer Science", year: "2nd" },
+  { id: 3, name: "Aisha Yadav", age: 19, course: "Computer Science ", year: "2nd" }
+];
+
+// API endpoint
+app.get("/api/students", (req, res) => {
+  res.json({ students });
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
