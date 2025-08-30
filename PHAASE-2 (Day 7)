@@ -1,0 +1,46 @@
+import React, { useState } from "react";
+
+export default function StateManagementDemo() {
+  // Counter state
+  const [count, setCount] = useState(0);
+
+  // Input state
+  const [text, setText] = useState("");
+
+  return (
+    <div className="p-6 max-w-md mx-auto">
+      {/* Counter Section */}
+      <div className="mb-6 p-4 border rounded-xl shadow">
+        <h2 className="text-xl font-bold mb-2">Counter</h2>
+        <p className="text-lg mb-2">Count: {count}</p>
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg mr-2"
+          onClick={() => setCount(count + 1)}
+        >
+          Increment
+        </button>
+        <button
+          className="px-4 py-2 bg-red-500 text-white rounded-lg"
+          onClick={() => setCount(count - 1)}
+        >
+          Decrement
+        </button>
+      </div>
+
+      {/* Live Text Preview Section */}
+      <div className="p-4 border rounded-xl shadow">
+        <h2 className="text-xl font-bold mb-2">Live Text Preview</h2>
+        <input
+          type="text"
+          placeholder="Type something..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          className="w-full p-2 border rounded mb-3"
+        />
+        <p className="text-lg">
+          <strong>Preview:</strong> {text}
+        </p>
+      </div>
+    </div>
+  );
+}
