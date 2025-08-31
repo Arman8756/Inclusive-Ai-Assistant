@@ -1,0 +1,140 @@
+const { useState, useMemo } = React;
+
+function App() {
+  const [items, setItems] = useState([
+    { id: 1, title: "Learn .map()", done: true },
+    { id: 2, title: "Wire up onClick", done: false },
+    { id: 3, title: "Control input with onChange", done: false },
+  ]);
+  const [text, setText] = useState("");
+  const [filter, setFilter] = useState("all");
+
+  // Derived list based on filter
+  const filtered = useMemo(() => {
+    if (filter === "active") return items.filter(i => !i.done);
+    if (filter === "done") return items.filter(i => i.done);
+    return items;
+  }, [items, filter]);
+
+  // --- Event Handlers ---
+  const handleAdd = () => {
+    const title = text.trim();
+    if (!title) return;
+    setItems(prev => [
+      ...prev,
+      { id: Date.now(), title, done: false },
+    ]);
+    setText("");
+  };
+
+  const handleToggle = (id) => {
+    setItems(prev => prev.map(i => i.id === id ? { ...i, done: !i.done } : i));
+  };
+
+  const handleDelete = (id) => {
+    setItems(prev => prev.filter(i => i.id !== id));
+  };
+
+  const handleTitleChange = (id, nextTitle) => {
+    setItems(prev => prev.map(i => i.id === id ? { ...i, title: nextTitle } : i));
+  };
+
+  const totalDone = items.filter(i => i.done).length;
+
+  return (
+    <div className="card">
+      <h1>React .map + Events</h1>
+      <p className="hint muted">
+        This demo shows rendering lists with <code>.map()</code> and handling <code>onClick</code>/<code>onChange</code>.
+        Tip: press <span className="kbd">Enter</span> to add.
+      </p>
+
+      <div className="row">
+        {/* Controlled input: onChange updates state */}
+        <input
+          type="text"
+          placeholder="Add a task…"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") handleAdd(); }}
+        />
+        {/* onClick tied to the add handler */}
+        <button onClick={handleAdd}>Add</button>
+
+        <span className="spacer"></span>
+
+        {/* Controlled select with onChange */}
+        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="done">Done</option>
+        </select>
+      </div>
+
+      {/* Render the list with .map */}
+      <ul>
+        {filtered.map(item => (
+          <li key={item.id}>
+            {/* Click to toggle done */}
+            <input
+              type="checkbox"
+              checked={item.done}
+              onChange={() => handleToggle(item.id)}
+              aria-label={item.done ? "Mark as not done" : "Mark as done"}
+            />
+
+            {/* Inline edit (controlled) */}
+            <input
+              className={"task-title " + (item.done ? "done" : "")}
+              value={item.title}
+              onChange={(e) => handleTitleChange(item.id, e.target.value)}
+            />
+
+            {/* Show state */}
+            <span className="muted small">{item.done ? "Done" : "Active"}</span>
+
+            {/* Button with an onClick handler that passes an argument */}
+            <button className="btn-ghost" onClick={() => handleDelete(item.id)} title="Delete">
+              ✕
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <div className="count muted">
+        {totalDone} / {items.length} done
+      </div>
+
+      <p className="muted small" style={{marginTop: "1rem"}}>
+        Source code is in <code>app.jsx</code>. No build needed. Uses CDN React + Babel for a quick demo.
+        For production, use Vite/webpack and remove Babel-in-browser.
+      </p>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />); 
+# React: Rendering Lists with .map & Handling Events
+
+This is a zero-build demo (uses CDN + Babel in the browser). Just open `index.html`.
+
+## What it shows
+- Rendering lists from state with `.map`.
+- Controlled inputs with `onChange`.
+- Click handlers with `onClick` (including event arguments).
+- Immutable updates to arrays (add, toggle, delete, edit).
+
+## Getting started
+1. Unzip the archive.
+2. Open `index.html` in your browser (no build step needed).
+3. Try:
+   - Typing a task and pressing Add.
+   - Clicking a task to toggle "done".
+   - Editing a task inline.
+   - Deleting tasks.
+   - Filtering with the dropdown.
+
+## Files
+- `index.html` – includes React, ReactDOM, and Babel from CDNs.
+- `app.jsx` – React app code (JSX) loaded in the browser.
