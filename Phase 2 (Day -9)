@@ -1,0 +1,105 @@
+{
+  "name": "student-api",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
+
+const express = require("express");
+const cors = require("cors");
+const students = require("./students.json");
+
+const app = express();
+app.use(cors());
+
+app.get("/students", (req, res) => {
+  res.json(students);
+});
+
+const PORT = 5000;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+[
+  { "id": 1, "name": "Alice", "age": 20 },
+  { "id": 2, "name": "Bob", "age": 22 },
+  { "id": 3, "name": "Charlie", "age": 21 }
+]
+
+{
+  "name": "student-frontend",
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "5.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start"
+  }
+}
+
+import React from "react";
+import StudentList from "./StudentList";
+
+function App() {
+  return (
+    <div className="App">
+      <h1>React + Node Student API</h1>
+      <StudentList />
+    </div>
+  );
+}
+
+export default App;
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+
+import React, { useState, useEffect } from "react";
+
+const StudentList = () => {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/students");
+        const data = await res.json();
+        setStudents(data);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    fetchStudents();
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  return (
+    <div>
+      <h2>Student List</h2>
+      <ul>
+        {students.map((student) => (
+          <li key={student.id}>{student.name} - {student.age} years old</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default StudentList;
