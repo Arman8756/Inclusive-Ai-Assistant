@@ -1,0 +1,102 @@
+// server.js
+const express = require("express");
+const path = require("path");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+let todos = [
+  { id: 1, text: "Learn React" },
+  { id: 2, text: "Build ToDo App" },
+];
+
+// API Routes
+app.get("/api/todos", (req, res) => {
+  res.json(todos);
+});
+
+app.post("/api/todos", (req, res) => {
+  const newTodo = { id: Date.now(), text: req.body.text };
+  todos.push(newTodo);
+  res.json(newTodo);
+});
+
+app.delete("/api/todos/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  todos = todos.filter((t) => t.id !== id);
+  res.json({ success: true });
+});
+
+// ---- Frontend (React App) ----
+const frontendHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>To-Do App</title>
+</head>
+<body style="font-family:Arial; padding:20px;">
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script>
+    const e = React.createElement;
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [todos, setTodos] = useState([]);
+      const [text, setText] = useState("");
+
+      useEffect(() => {
+        fetch("/api/todos")
+          .then(res => res.json())
+          .then(data => setTodos(data));
+      }, []);
+
+      const addTodo = async () => {
+        if (!text.trim()) return;
+        const res = await fetch("/api/todos", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ text })
+        });
+        const newTodo = await res.json();
+        setTodos([...todos, newTodo]);
+        setText("");
+      };
+
+      const deleteTodo = async (id) => {
+        await fetch("/api/todos/" + id, { method: "DELETE" });
+        setTodos(todos.filter(t => t.id !== id));
+      };
+
+      return e("div", null,
+        e("h1", null, " To-Do App"),
+        e("input", {
+          value: text,
+          onChange: e => setText(e.target.value),
+          placeholder: "Enter task..."
+        }),
+        e("button", { onClick: addTodo }, "Add"),
+        e("ul", null, todos.map(todo =>
+          e("li", { key: todo.id },
+            todo.text, " ",
+            e("button", { onClick: () => deleteTodo(todo.id) }, "Delete")
+          )
+        ))
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(e(App));
+  </script>
+</body>
+</html>
+`;
+
+app.get("/", (req, res) => {
+  res.send(frontendHTML);
+});
+
+app.listen(5000, () => console.log("App running at http://localhost:5000"));
